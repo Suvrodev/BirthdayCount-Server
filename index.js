@@ -72,11 +72,42 @@ async function run() {
     ///Get Operation start
     app.get('/bd',async(req,res)=>{
         let query={};
-        if(req.query.email){
-            query={ref: req.query.email}
+        let getSort;
+        let getSearch;
+        if(req?.query?.email){
+            query={ ...query,ref: req?.query?.email}
         }
-        const result=await friendCollection.find(query).toArray()
-        res.send(result)
+
+        if(req?.query?.search){
+            getSearch=req?.query?.search
+            query={...query, name: {$regex: getSearch, $options: 'i'}}
+        }
+        console.log("Get Search: ",getSearch);
+
+
+        if(req?.query?.sort){
+            getSort=req?.query?.sort
+           
+        }
+        console.log("get sort: ",getSort);
+        if(getSort=="1"){
+            console.log("Come in 1");
+            const result=await friendCollection.find(query).sort({ratting:1}).toArray()
+            res.send(result)
+        }
+        else if(getSort=="-1"){
+            console.log("Come in 1");
+            const result=await friendCollection.find(query).sort({ratting:-1}).toArray()
+            res.send(result)
+        }
+        else{
+            console.log("Come in 0");
+            const result=await friendCollection.find(query).toArray()
+            res.send(result)
+        }
+      
+
+       
     })
     ///Get Operation end
 
