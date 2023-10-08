@@ -69,11 +69,34 @@ async function run() {
     ////Post Operation end
 
 
+    ///Get Operation for total janogon start
+    app.get('/bds',async(req,res)=>{
+        let query={}
+        query={ ...query,ref: req?.query?.email}
+        const result=await friendCollection.find(query).toArray()
+        res.send(result)
+    })
+    ///Get Operation for total janogon end
+
+
     ///Get Operation start
     app.get('/bd',async(req,res)=>{
         let query={};
         let getSort;
         let getSearch;
+        
+
+        
+        let page=parseInt(req?.query?.page) || 0;
+        console.log("Page:",page);
+        console.log("Page type: ",typeof(page));
+
+        let limit=parseInt(req?.query?.limit) || 5;
+        console.log("Limit: ",limit);
+        console.log("Limit type: ",typeof(limit));
+
+        const skip=page*limit
+
         if(req?.query?.email){
             query={ ...query,ref: req?.query?.email}
         }
@@ -91,18 +114,18 @@ async function run() {
         }
         console.log("get sort: ",getSort);
         if(getSort=="1"){
-            console.log("Come in 1");
-            const result=await friendCollection.find(query).sort({ratting:1}).toArray()
+            // console.log("Come in 1");
+            const result=await friendCollection.find(query).skip(skip).limit(limit).sort({ratting:1}).toArray()
             res.send(result)
         }
         else if(getSort=="-1"){
-            console.log("Come in 1");
-            const result=await friendCollection.find(query).sort({ratting:-1}).toArray()
+            // console.log("Come in -1");
+            const result=await friendCollection.find(query).skip(skip).limit(limit).sort({ratting:-1}).toArray()
             res.send(result)
         }
         else{
-            console.log("Come in 0");
-            const result=await friendCollection.find(query).toArray()
+            // console.log("Come in 0");
+            const result=await friendCollection.find(query).skip(skip).limit(limit).toArray()
             res.send(result)
         }
       
