@@ -59,6 +59,35 @@ async function run() {
   
     //Operation start
     const friendCollection=client.db('birthdayCount').collection('friends')
+    const userCollection=client.db('birthdayCount').collection('user')
+
+
+    ///Use Operation start
+
+    ///post user start
+    app.post('/user',async(req,res)=>{
+        const collectUser=req.body;
+        console.log("User: ",collectUser);
+
+        const query={email:collectUser.email}
+        const existUser=await userCollection.findOne(query)
+
+        if(existUser){
+            console.log("USer Already Exists");
+            return res.send({message:'user already exists'})
+        }
+
+        const result=await userCollection.insertOne(collectUser)
+        console.log("User added");
+        res.send(result)
+    })
+    ///Post user end
+    ///Use Operation end
+
+
+
+
+    /////Birthday Operation start
 
     ////Post Operation start
     app.post('/bd',async(req,res)=>{
@@ -170,11 +199,7 @@ async function run() {
     })
     ///Patch Data end
 
-
-
-
-
-
+    /////Birthday Operation end
 
     //Operation end
 
