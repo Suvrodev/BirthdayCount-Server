@@ -82,7 +82,54 @@ async function run() {
         res.send(result)
     })
     ///Post user end
-    ///Use Operation end
+
+    ///Get user operation start
+    app.get('/alluser',async(req,res)=>{
+        const result=await userCollection.find().toArray();
+        res.send(result)
+
+    })
+    ///Get user operation end
+
+     ///Get specific user operation start
+    app.get('/allusers/:email',async(req,res)=>{
+        const email=req.params.email;
+        console.log("Email: ",email);
+        const query={email:email}
+        const result=await userCollection.findOne(query)
+        res.send(result)
+    })
+    ///Get specific user operation end
+
+    //Delete user start
+    app.delete('/user/:id',async(req,res)=>{
+        const id=req.params.id;
+        console.log("Delete id: ",id);
+        const query={_id: new ObjectId(id)}
+        const result=await userCollection.deleteOne(query)
+        res.send(result)
+    })
+    //Delete user end
+
+    ///make admin user start
+    app.patch('/user/:id',async(req,res)=>{
+        const id=req.params.id;
+        const user=req.body;
+        console.log("Update id: ",id);
+        console.log("Update user: ",user);
+
+        const filter={_id: new ObjectId(id)}
+        const updateUser={
+            $set:{
+                role: 'admin'
+            }
+        }
+        const result=await userCollection.updateOne(filter,updateUser)
+        res.send(result)
+    })
+    ///make admin user end
+
+
 
 
 
