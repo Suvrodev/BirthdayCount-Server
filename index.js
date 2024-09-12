@@ -86,7 +86,7 @@ async function run() {
       const result = await userCollection.find().toArray();
       res.send(result);
     });
-    ///Get user operation end
+    ///Get user operation end-
 
     ///Get specific user operation start
     app.get("/allusers/:email", async (req, res) => {
