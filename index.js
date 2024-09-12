@@ -17,7 +17,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   console.log(`Birthday Count Server is going on port: ${port}`);
-  res.send(`Update Birthday Count Server is going on port: ${port}`);
+  res.send(`-Update Birthday Count Server is going on port: ${port}`);
 });
 
 app.get("/we", (req, res) => {
