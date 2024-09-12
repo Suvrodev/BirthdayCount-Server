@@ -17,7 +17,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   console.log(`Birthday Count Server is going on port: ${port}`);
-  res.send(`-(Change) Birthday Count Server is going on port: ${port}`);
+  res.send(`-(try catch) Birthday Count Server is going on port: ${port}`);
 });
 
 app.get("/we", (req, res) => {
@@ -138,10 +138,18 @@ async function run() {
 
     ///Get Operation for total janogon start
     app.get("/bds", async (req, res) => {
-      let query = {};
-      query = { ...query, ref: req?.query?.email };
-      const result = await friendCollection.find(query).toArray();
-      res.send(result);
+      const email = req?.query?.email;
+      console.log("----", email);
+
+      try {
+        const query = { ref: email };
+
+        const result = await friendCollection.find(query).toArray();
+        res.send(result);
+      } catch (error) {
+        console.error("Database query error:", error);
+        res.status(500).json({ error: "An internal server error occurred" });
+      }
     });
     ///Get Operation for total janogon end
 
