@@ -4,7 +4,7 @@ const cors = require("cors");
 const we = require("./Data/We.json");
 require("dotenv").config();
 
-const port = process.env.PORT || 7000;
+const port = process.env.PORT || 3003;
 
 const app = express();
 const corsConfig = {
@@ -17,7 +17,9 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   console.log(`Birthday Count Server is going on port: ${port}`);
-  res.send(`-(try catch) Birthday Count Server is going on port: ${port}`);
+  res.send(
+    `-(search and total) Birthday Count Server is going on port: ${port}`
+  );
 });
 
 app.get("/we", (req, res) => {
@@ -136,14 +138,54 @@ async function run() {
     });
     ////Post Operation end
 
+    ///Total inserted Number start
+    app.get("/total", async (req, res) => {
+      try {
+        console.log("Come Count");
+        let query = {};
+        const email = req?.query?.email;
+        if (email) {
+          console.log("Email---", email);
+          query = { ...query, ref: email };
+        }
+
+        // Use countDocuments to apply the query
+        const result = await friendCollection.countDocuments(query);
+
+        res.status(200).send({ total: result });
+      } catch (error) {
+        res
+          .status(500)
+          .send({ error: "An error occurred while fetching the total count." });
+      }
+    });
+    ///Total inserted Number End
+
     ///Get Operation for total janogon start
     app.get("/bds", async (req, res) => {
+      console.log("Come");
+
+      let query = {};
       const email = req?.query?.email;
-      console.log("----", email);
+      const search = req?.query?.search;
+      const page = parseInt(req?.query?.page) || 0;
+      const limit = 5;
 
       try {
-        const query = { ref: email };
+        if (email) {
+          console.log("Email---", email);
+          query = { ...query, ref: email };
+        }
+        if (search) {
+          console.log("Search---", search);
+          query = { ...query, name: { $regex: search, $options: "i" } };
+        }
+        // if (page) {
+        console.log("Page---", page);
+        const skip = page * limit;
+        // }
 
+        console.log("Top of Result");
         const result = await friendCollection.find(query).toArray();
         res.send(result);
       } catch (error) {
